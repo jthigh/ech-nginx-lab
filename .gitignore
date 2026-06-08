@@ -1,0 +1,14 @@
+certs/
+ech/
+secrets/
+
+*.key
+*.pem
+*.crt
+*.csr
+*.p12
+*.pfx
+*.srl
+
+.env.local
+.env.*.local

@@ -1,0 +1,68 @@
+FROM local/ech-nginx:nginx-1.29.4-openssl-ech AS openssl_ech
+
+FROM debian:bookworm-slim AS build
+
+ARG CURL_VERSION=8.20.0
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="/opt/openssl-ech/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ENV LD_LIBRARY_PATH="/opt/openssl-ech/lib64:/opt/openssl-ech/lib"
+ENV PKG_CONFIG_PATH="/opt/openssl-ech/lib64/pkgconfig:/opt/openssl-ech/lib/pkgconfig"
+
+COPY --from=openssl_ech /opt/openssl-ech /opt/openssl-ech
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    build-essential \
+    curl \
+    pkg-config \
+    perl \
+    zlib1g-dev \
+    libbrotli-dev \
+    libzstd-dev \
+    libpsl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src
+
+RUN curl -fsSLO "https://curl.se/download/curl-${CURL_VERSION}.tar.xz" \
+    && tar -xf "curl-${CURL_VERSION}.tar.xz"
+
+WORKDIR /usr/src/curl-${CURL_VERSION}
+
+RUN ./configure \
+    --prefix=/opt/curl-ech \
+    --with-openssl=/opt/openssl-ech \
+    --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt \
+    --enable-ech \
+    --disable-shared \
+    --enable-static \
+    --disable-ldap \
+    --disable-ldaps \
+    --without-libidn2 \
+    --without-librtmp \
+    --without-libssh2 \
+    --without-nghttp2 \
+    --without-ngtcp2 \
+    --without-nghttp3 \
+    && make -j"$(nproc)" \
+    && make install
+
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="/opt/curl-ech/bin:/opt/openssl-ech/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ENV LD_LIBRARY_PATH="/opt/openssl-ech/lib64:/opt/openssl-ech/lib"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    zlib1g \
+    libbrotli1 \
+    libzstd1 \
+    libpsl5 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=openssl_ech /opt/openssl-ech /opt/openssl-ech
+COPY --from=build /opt/curl-ech /opt/curl-ech
+
+CMD ["/opt/curl-ech/bin/curl", "--version"]

@@ -1,0 +1,73 @@
+services:
+  ech-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NGINX_VERSION: "${NGINX_VERSION}"
+        OPENSSL_GIT_REF: "${OPENSSL_GIT_REF}"
+        NGINX_SHA256: "${NGINX_SHA256:-}"
+
+    image: "${APP_IMAGE}"
+    container_name: ech_nginx_container
+
+    restart: unless-stopped
+    init: true
+
+    user: "101:101"
+
+    ports:
+      - "${HOST_BIND_IP:-0.0.0.0}:${HOST_PORT:-9444}:8443"
+
+    read_only: true
+
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,mode=1777,uid=101,gid=101
+      - /var/cache/nginx:rw,noexec,nosuid,nodev,mode=0755,uid=101,gid=101
+      - /run:rw,noexec,nosuid,nodev,mode=0755,uid=101,gid=101
+
+    security_opt:
+      - no-new-privileges=true
+
+    cap_drop:
+      - ALL
+
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./mime.types:/etc/nginx/mime.types:ro
+      - ./conf.d:/etc/nginx/conf.d:ro
+      - ./certs:/etc/nginx/certs:ro
+      - ./ech:/etc/nginx/ech:ro
+      - ./site-content:/usr/share/nginx/html:ro
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >
+          /usr/local/sbin/nginx -t >/dev/null 2>&1 || exit 1;
+          test -s /tmp/nginx.pid || exit 1;
+          kill -0 "$(cat /tmp/nginx.pid)" 2>/dev/null || exit 1
+      interval: 30s
+      timeout: 7s
+      start_period: 20s
+      retries: 3
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+        compress: "true"
+
+    mem_limit: 512m
+    mem_reservation: 256m
+    mem_swappiness: 0
+    pids_limit: 512
+
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+      nproc: 4096
+
+    stop_grace_period: 30s
