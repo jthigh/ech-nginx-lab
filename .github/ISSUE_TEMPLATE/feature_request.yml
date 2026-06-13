@@ -1,0 +1,94 @@
+name: Feature request
+description: Suggest an improvement or new test pattern for the ECH NGINX lab stack
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement.
+
+        This project is focused on direct-origin ECH testing with NGINX, OpenSSL, Docker Compose, DNS HTTPS/SVCB records, and validation tooling.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the proposed improvement.
+      placeholder: What should be added or changed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem being solved
+      description: What problem does this solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-approach
+    attributes:
+      label: Proposed approach
+      description: Describe how you think this could work.
+    validations:
+      required: false
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: Who would benefit from this?
+      placeholder: |
+        Examples:
+        - Direct-origin ECH testing
+        - NGINX/OpenSSL ECH build improvements
+        - Docker Compose hardening
+        - DNS HTTPS/SVCB record handling
+        - Cloudflare DNS-only automation
+        - curl/OpenSSL validation
+        - Relay-fronted direct-origin ECH
+        - Documentation clarity
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe any alternatives you considered.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: security-privacy
+    attributes:
+      label: Security and privacy considerations
+      description: Does this change affect any of the following?
+      options:
+        - label: TLS termination location
+        - label: ECH private/generated key handling
+        - label: DNS privacy
+        - label: SNI privacy
+        - label: Destination IP visibility
+        - label: CDN/WAF involvement
+        - label: Relay or tunnel trust boundaries
+
+  - type: checkboxes
+    id: willingness
+    attributes:
+      label: Willingness to test
+      options:
+        - label: I can test this change.
+        - label: I can provide logs or sanitized output.
+        - label: I can submit a pull request.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context, references, or examples.
+    validations:
+      required: false
