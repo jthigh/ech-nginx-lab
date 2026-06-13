@@ -1,0 +1,9 @@
+blank_issues_enabled: true
+contact_links:
+
+* name: Security-sensitive report
+  url: https://github.com/jthigh/ech-nginx-lab/security/policy
+  about: Please do not open public issues for secrets, private keys, tokens, or security-sensitive reports.
+* name: Project README
+  url: https://github.com/jthigh/ech-nginx-lab#readme
+  about: Start here for setup, testing, and project scope.
