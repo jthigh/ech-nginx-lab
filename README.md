@@ -4,19 +4,38 @@ A Docker Compose based lab stack for experimenting with NGINX, OpenSSL ECH suppo
 
 This repository is intended for learning, testing, and small lab environments. It is not a drop-in production reverse proxy template.
 
+## Looking for testers
+
+This project is intended to be a practical, reproducible lab for testing NGINX, OpenSSL ECH support, DNS HTTPS/SVCB records, browser behavior, and ECH fallback cases.
+
+Feedback is welcome here:
+
+https://github.com/jthigh/ech-nginx-lab/issues/2
+
+Useful feedback includes:
+
+* Build results on different Linux distributions and CPU architectures
+* Browser behavior from Firefox, Chrome, Edge, Safari, and other ECH-capable clients
+* DNS HTTPS/SVCB record examples
+* DoH/DoT resolver behavior
+* Packet captures showing expected outer SNI / inner ClientHello behavior
+* Failure or fallback cases where ECH silently does not engage
+* Cloudflare versus self-hosted ECH comparison notes
+* Suggestions for additional validation cases
+
 ## What this project does
 
 This stack builds and runs an NGINX container configured for direct TLS termination and ECH testing.
 
 It includes:
 
-- A custom NGINX build container
-- Example NGINX TLS/ECH configuration
-- Docker Compose deployment file
-- Static test content
-- ECH status endpoints
-- Helper scripts for local/internal and external ECH testing
-- Optional Cloudflare DNS upsert helper for A and HTTPS records
+* A custom NGINX build container
+* Example NGINX TLS/ECH configuration
+* Docker Compose deployment file
+* Static test content
+* ECH status endpoints
+* Helper scripts for local/internal and external ECH testing
+* Optional Cloudflare DNS upsert helper for A and HTTPS records
 
 ## What this project does not include
 
@@ -77,24 +96,24 @@ The following files are also intentionally excluded:
 
 You need:
 
-- Docker Engine
-- Docker Compose plugin
-- A domain you control
-- DNS access for that domain
-- TLS certificate and private key material for your test hostname
-- ECH-capable test tooling
+* Docker Engine
+* Docker Compose plugin
+* A domain you control
+* DNS access for that domain
+* TLS certificate and private key material for your test hostname
+* ECH-capable test tooling
 
 Optional:
 
-- Cloudflare DNS API token if using `cf-ech-dns-upsert.py`
+* Cloudflare DNS API token if using `cf-ech-dns-upsert.py`
 
 ## Local setup
 
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR-GITHUB-USER/YOUR-REPO-NAME.git
-cd YOUR-REPO-NAME
+git clone https://github.com/jthigh/ech-nginx-lab.git
+cd ech-nginx-lab
 ```
 
 Create your local environment file:
@@ -356,12 +375,12 @@ dig public.example.com A
 
 ## References
 
-- Docker Engine documentation: https://docs.docker.com/engine/
-- Docker Compose documentation: https://docs.docker.com/compose/
-- NGINX documentation: https://nginx.org/en/docs/
-- OpenSSL documentation: https://docs.openssl.org/
-- Cloudflare DNS API documentation: https://developers.cloudflare.com/api/resources/dns/
-- GitHub secret scanning documentation: https://docs.github.com/en/code-security/secret-scanning
+* Docker Engine documentation: https://docs.docker.com/engine/
+* Docker Compose documentation: https://docs.docker.com/compose/
+* NGINX documentation: https://nginx.org/en/docs/
+* OpenSSL documentation: https://docs.openssl.org/
+* Cloudflare DNS API documentation: https://developers.cloudflare.com/api/resources/dns/
+* GitHub secret scanning documentation: https://docs.github.com/en/code-security/secret-scanning
 
 ## License
 
